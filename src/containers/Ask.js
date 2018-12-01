@@ -12,7 +12,7 @@ class Ask extends Component {
   }
 
   onSubmit = () => {
-    const { titleValue, keywordValue, question } = this.state;
+    const { titleValue, keywordValue } = this.state;
     const { currentUser } = firebase.auth();
     firebase
       .firestore()
