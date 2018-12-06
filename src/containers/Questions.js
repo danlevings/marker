@@ -2,7 +2,19 @@ import React, { Component } from "react";
 import { Table, Button, Icon } from "antd";
 import { Link } from "react-router-dom";
 import firebase from "firebase";
+import styled from "styled-components";
 
+const StyledTable = styled(Table)`
+  th {
+    font-size: 21px;
+    background: none !important;
+  }
+
+  tr,
+  th {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+  }
+`;
 const REVIEW_OPTIONS = {
   A: "Excellent",
   B: "Good",
@@ -122,7 +134,7 @@ class Questions extends Component {
       ...question,
       title: (
         <div>
-          {question.title}
+          <strong>{question.title}</strong>
           <br />
           {question.author.name}
         </div>
@@ -133,8 +145,10 @@ class Questions extends Component {
     }));
     return (
       <div className="wrapper">
-        <h1>Questions</h1>
-        <Table dataSource={dataSource} columns={columns} />
+        <div style={{ textAlign: "center" }}>
+          <h1 className="stroked">Questions</h1>
+        </div>
+        <StyledTable dataSource={dataSource} columns={columns} />
         <Link to="/" className="button">
           Back to home
         </Link>

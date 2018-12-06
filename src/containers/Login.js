@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import firebase from "firebase";
-import { Button } from "antd";
+import GoogleSignInImage from "../assets/btn_google_signin.png";
+import styled from "styled-components";
 
+const SignInButton = styled.button`
+  background: none;
+  outline: none;
+  border: none;
+  text-align: center;
+`;
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -38,16 +45,18 @@ class Login extends Component {
   render() {
     return (
       <div className="wrapper" style={{ textAlign: "center" }}>
-        <h1 className="stroked">Login to Marker</h1>
+        <h1 className="stroked">Marker</h1>
         <div
           style={{
-            width: 300,
             display: "flex",
-            justifyContent: "space-between"
+            justifyContent: "center"
           }}
         >
-          <Button onClick={this.onSignIn}>Sign in</Button>
+          <SignInButton onClick={this.onSignIn}>
+            <img src={GoogleSignInImage} alt="Sign in" />
+          </SignInButton>
         </div>
+        <footer>A university project by Dan Levings</footer>
       </div>
     );
   }

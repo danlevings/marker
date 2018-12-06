@@ -79,7 +79,7 @@ class Review extends Component {
         firebase
           .firestore()
           .collection("modelResults")
-          .where("answerId", "==", answerId)
+          .doc(answerId)
           .get()
           .then(doc => {
             if (doc.exists) {
@@ -154,11 +154,21 @@ class Review extends Component {
           {machineAssessment && (
             <div className="our-assessment">
               <div>Our assessment</div>
-              <div className="assessment">0.1</div>
-              <div className="assessment">0.4</div>
-              <div className="assessment">0.7</div>
-              <div className="assessment">0.6</div>
-              <div className="assessment">0.1</div>
+              <div className="assessment">
+                {parseFloat(machineAssessment.A).toFixed(3)}
+              </div>
+              <div className="assessment">
+                {parseFloat(machineAssessment.B).toFixed(3)}
+              </div>
+              <div className="assessment">
+                {parseFloat(machineAssessment.C).toFixed(3)}
+              </div>
+              <div className="assessment">
+                {parseFloat(machineAssessment.D).toFixed(3)}
+              </div>
+              <div className="assessment">
+                {parseFloat(machineAssessment.E).toFixed(3)}
+              </div>
             </div>
           )}
           <div className="comments">

@@ -20,7 +20,6 @@ class App extends Component {
 
   componentDidMount() {
     var user = firebase.auth().currentUser;
-    console.log(user);
     this.setState({
       isLoading: false,
       isAuthenticated: user
