@@ -1,12 +1,41 @@
 import React, { Component } from "react";
-import { Button, Icon, notification } from "antd";
+import { Icon, notification } from "antd";
 import styled from "styled-components";
 import firebase from "firebase";
+import { Link } from "react-router-dom";
+
+const BackButton = styled(Link)`
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  border: none;
+  font-size: 18px;
+`;
+
+const Subtitle = styled.div`
+  padding-bottom: 8px;
+`;
+
+const TextBox = styled.textarea`
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  margin-bottom: 16px;
+  font-size: 18px;
+  padding: 4px 8px;
+
+  &:focus {
+    background: white;
+  }
+`;
 
 const Container = styled.main`
   display: grid;
+  grid-gap: 20px
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
+  width: 80%;
+  margin: 0 auto;
   height: 700px;
 
   .user-answer {
@@ -31,7 +60,14 @@ const Container = styled.main`
 
   .assessment {
     width: 100%;
-    height: 20%;
+    padding-bottom: 8px;
+    font-size: 21px;
+  }
+  .machine-assessment {
+    width: 100%;
+    padding: 8px 16px 13px;
+    font-size: 21px;
+    border-left: 4px solid black;
   }
 `;
 
@@ -49,9 +85,11 @@ class Review extends Component {
     this.state = {
       isLoading: true,
       answer: {},
+      question: {},
       selectedReview: null,
       machineAssessment: null,
-      comments: ""
+      comments: "",
+      questionTitle: ""
     };
   }
 
@@ -103,7 +141,7 @@ class Review extends Component {
         params: { answerId }
       }
     } = this.props;
-    const { selectedReview, comments } = this.state;
+    const { selectedReview, comments, answer } = this.state;
     firebase
       .firestore()
       .collection("answers")
@@ -116,6 +154,13 @@ class Review extends Component {
       .then(() => {
         notification.success({ message: "Answer reviewed!" });
         this.props.history.push("/answers");
+
+        var onReview = firebase.functions().httpsCallable("onReview");
+        onReview({ questionId: answer.questionId, answerId: answer.id }).then(
+          result => {
+            console.log(result);
+          }
+        );
       });
   };
 
@@ -131,57 +176,110 @@ class Review extends Component {
       return <Icon type="loading" />;
     }
     return (
-      <div>
-        <h1 className="stroked">How has IT affected our society?</h1>
+      <div style={{ width: "100%", marginTop: 60 }}>
+        <h1
+          className="stroked"
+          style={{
+            textAlign: "center",
+            fontSize: 42,
+            width: "80%",
+            margin: "0 auto",
+            marginBottom: 16
+          }}
+        >
+          How has IT affected our society?
+        </h1>
         <Container>
           <div className="user-answer">
-            <div>User answer</div>
-            <textarea value={answer.answer} disabled />
+            <Subtitle>User answer</Subtitle>
+            <TextBox value={answer.answer} disabled />
           </div>
           <div className="your-assessment">
-            <div>Your assessment</div>
+            <Subtitle>Your assessment</Subtitle>
             {Object.keys(REVIEW_OPTIONS).map(key => (
               <div className="assessment">
-                <Button
+                <button
+                  className="button"
+                  style={{
+                    width: "100%",
+                    background:
+                      selectedReview === key ? "black" : "transparent",
+                    color: selectedReview === key ? "white" : "black"
+                  }}
                   onClick={() => this.onAssess(key)}
-                  type={selectedReview === key ? "primary" : "default"}
                 >
                   {REVIEW_OPTIONS[key]}
-                </Button>
+                </button>
               </div>
             ))}
           </div>
           {machineAssessment && (
             <div className="our-assessment">
-              <div>Our assessment</div>
-              <div className="assessment">
+              <Subtitle>Our assessment</Subtitle>
+              <div
+                className="machine-assessment"
+                style={{
+                  borderLeft: `4px solid hsl(${machineAssessment.A *
+                    100}, 50%, 50%)`
+                }}
+              >
                 {parseFloat(machineAssessment.A).toFixed(3)}
               </div>
-              <div className="assessment">
+              <div
+                className="machine-assessment"
+                style={{
+                  borderLeft: `4px solid hsl(${machineAssessment.B *
+                    100}, 50%, 50%)`
+                }}
+              >
                 {parseFloat(machineAssessment.B).toFixed(3)}
               </div>
-              <div className="assessment">
+              <div
+                className="machine-assessment"
+                style={{
+                  borderLeft: `4px solid hsl(${machineAssessment.C *
+                    100}, 50%, 50%)`
+                }}
+              >
                 {parseFloat(machineAssessment.C).toFixed(3)}
               </div>
-              <div className="assessment">
+              <div
+                className="machine-assessment"
+                style={{
+                  borderLeft: `4px solid hsl(${machineAssessment.D *
+                    100}, 50%, 50%)`
+                }}
+              >
                 {parseFloat(machineAssessment.D).toFixed(3)}
               </div>
-              <div className="assessment">
+              <div
+                className="machine-assessment"
+                style={{
+                  borderLeft: `4px solid hsl(${machineAssessment.E *
+                    100}, 50%, 50%)`
+                }}
+              >
                 {parseFloat(machineAssessment.E).toFixed(3)}
               </div>
             </div>
           )}
           <div className="comments">
             <div>Comments</div>
-            <textarea
+            <TextBox
               value={comments}
+              style={{ height: 200 }}
               onChange={e =>
                 this.setState({
                   comments: e.target.value
                 })
               }
             />
-            <Button onClick={this.onSubmit}>Submit</Button>
+            <BackButton to="/answers" className="button">
+              <Icon type="arrow-left" /> Back to answers
+            </BackButton>
+            <button className="button" onClick={this.onSubmit}>
+              Submit
+            </button>
           </div>
         </Container>
       </div>

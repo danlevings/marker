@@ -1,6 +1,48 @@
 import React, { Component } from "react";
-import { Button, notification } from "antd";
+import { Icon, notification } from "antd";
 import firebase from "firebase";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const BackButton = styled(Link)`
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  border: none;
+  font-size: 18px;
+`;
+
+const TextBox = styled.input`
+  width: 100%;
+  background: transparent;
+  border: none;
+  border: 1px solid black;
+  margin-bottom: 16px;
+  font-size: 18px;
+  padding: 4px 8px;
+
+  &:focus {
+    background: white;
+  }
+`;
+
+const KeywordBox = styled.textarea`
+  width: 100%;
+  height: 200px;
+  background: transparent;
+  margin-bottom: 16px;
+  font-size: 18px;
+  padding: 4px 8px;
+
+  &:focus {
+    background: white;
+  }
+`;
+
+const AskContainer = styled.div`
+  width: 400px;
+  margin: 20px auto;
+`;
 
 class Ask extends Component {
   constructor(props) {
@@ -23,6 +65,7 @@ class Ask extends Component {
           name: currentUser.displayName,
           uid: currentUser.uid
         },
+        maxWordCount: 750,
         title: titleValue,
         keywords: keywordValue
       })
@@ -43,25 +86,29 @@ class Ask extends Component {
     return (
       <div>
         <h1 className="stroked">Create a question</h1>
-        <div>
+        <AskContainer>
           <div>What is the question?</div>
-          <input
+          <TextBox
             type="text"
             value={titleValue}
             name="titleValue"
             onChange={this.onChange}
           />
-        </div>
-        <div>
           <div>What could a possible answer look like?</div>
-          <textarea
+          <KeywordBox
             value={keywordValue}
             name="keywordValue"
             onChange={this.onChange}
           />
-        </div>
-        <div>
-          <Button onClick={this.onSubmit}>Submit</Button>
+        </AskContainer>
+
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <BackButton to="/" className="button">
+            <Icon type="arrow-left" /> Back to answers
+          </BackButton>
+          <button className="button" onClick={this.onSubmit}>
+            Submit
+          </button>
         </div>
       </div>
     );

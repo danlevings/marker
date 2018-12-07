@@ -4,7 +4,16 @@ import { Link } from "react-router-dom";
 import firebase from "firebase";
 import styled from "styled-components";
 
+const BackButton = styled(Link)`
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  border: none;
+  font-size: 18px;
+`;
+
 const StyledTable = styled(Table)`
+  margin-bottom: 60px;
   th {
     font-size: 21px;
     background: none !important;
@@ -148,10 +157,14 @@ class Questions extends Component {
         <div style={{ textAlign: "center" }}>
           <h1 className="stroked">Questions</h1>
         </div>
-        <StyledTable dataSource={dataSource} columns={columns} />
-        <Link to="/" className="button">
-          Back to home
-        </Link>
+        <StyledTable
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+        />
+        <BackButton to="/" className="button">
+          <Icon type="arrow-left" /> Back to home
+        </BackButton>
       </div>
     );
   }

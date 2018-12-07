@@ -8,6 +8,7 @@ const SignInButton = styled.button`
   outline: none;
   border: none;
   text-align: center;
+  cursor: pointer;
 `;
 class Login extends Component {
   constructor(props) {
@@ -39,7 +40,7 @@ class Login extends Component {
         // ...
       })
       .catch(error => {
-        console.log(error);
+        console.error("CAUGHT", error);
       });
   };
   render() {

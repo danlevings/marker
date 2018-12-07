@@ -1,6 +1,33 @@
 import React, { Component } from "react";
-import { Button, Icon, notification } from "antd";
+import { Icon, notification } from "antd";
 import firebase from "firebase";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
+
+const BackButton = styled(Link)`
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  border: none;
+  font-size: 18px;
+`;
+
+const AnswerBox = styled.textarea`
+  width: 100%;
+  height: 500px;
+  background: transparent;
+  font-size: 18px;
+  padding: 4px 8px;
+
+  &:focus {
+    background: white;
+  }
+`;
+
+const AnswerBoxContainer = styled.div`
+  width: 60%;
+  margin: 20px auto;
+`;
 
 class Answer extends Component {
   constructor(props) {
@@ -31,8 +58,6 @@ class Answer extends Component {
           isLoading: false
         });
       });
-
-    console.log(questionId);
   }
 
   onSubmit = () => {
@@ -41,8 +66,7 @@ class Answer extends Component {
     firebase
       .firestore()
       .collection("answers")
-      .doc()
-      .set({
+      .add({
         answer: answerValue,
         author: {
           name: currentUser.displayName,
@@ -53,9 +77,12 @@ class Answer extends Component {
         questionId: question.id,
         score: null
       })
-      .then(() => {
+      .then(docRef => {
         this.props.history.push("/questions");
         notification.success({ message: "You answered a question!" });
+
+        var onAnswer = firebase.functions().httpsCallable("onAnswer");
+        onAnswer({ questionId: question.id, answerId: docRef.id });
       });
   };
 
@@ -68,19 +95,38 @@ class Answer extends Component {
 
     return (
       <div>
-        <h1 className="stroked">{question.title}</h1>
-        <span>Your answer</span>
-        <textarea
-          value={answerValue}
-          onChange={e =>
-            this.setState({
-              answerValue: e.target.value
-            })
-          }
+        <h1
+          className="stroked"
+          style={{
+            textAlign: "center",
+            fontSize: 42,
+            width: "80%",
+            margin: "0 auto"
+          }}
         >
-          Write your answer here...
-        </textarea>
-        <Button onClick={this.onSubmit}>Submit</Button>
+          {question.title}
+        </h1>
+        <AnswerBoxContainer>
+          <div style={{ fontSize: 18, marginBottom: 8 }}>Your answer</div>
+          <AnswerBox
+            value={answerValue}
+            onChange={e =>
+              this.setState({
+                answerValue: e.target.value
+              })
+            }
+          >
+            Write your answer here...
+          </AnswerBox>
+          <div style={{ display: "flex", justifyContent: "right" }}>
+            <BackButton to="/questions" className="button">
+              <Icon type="arrow-left" /> Back to questions
+            </BackButton>
+            <button className="button" onClick={this.onSubmit}>
+              Submit
+            </button>
+          </div>
+        </AnswerBoxContainer>
       </div>
     );
   }

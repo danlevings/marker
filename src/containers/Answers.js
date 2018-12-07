@@ -4,7 +4,16 @@ import { Link } from "react-router-dom";
 import firebase from "firebase";
 import styled from "styled-components";
 
+const BackButton = styled(Link)`
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  border: none;
+  font-size: 18px;
+`;
+
 const StyledTable = styled(Table)`
+  margin-bottom: 60px;
   th {
     font-size: 21px;
     background: none !important;
@@ -30,11 +39,6 @@ class Answers extends Component {
           title: "Answers",
           dataIndex: "nAnswers",
           key: "answers"
-        },
-        {
-          title: "Score",
-          dataIndex: "score",
-          key: "score"
         }
       ],
       isLoading: true,
@@ -100,6 +104,7 @@ class Answers extends Component {
               nAnswers: (answers[question.id] || []).length
             }))}
             columns={columns}
+            pagination={false}
             expandedRowRender={record => (
               <Table
                 dataSource={(answers[record.id] || []).map(answer => ({
@@ -128,14 +133,16 @@ class Answers extends Component {
             )}
           />
         ) : (
-          <div>No data here</div>
+          <div style={{ marginBottom: 60 }}>No data here</div>
         )}
-        <Link to="/" className="button">
-          Back to home
-        </Link>
-        <Link to="/ask" className="button">
-          Ask a new question
-        </Link>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <BackButton to="/" className="button">
+            <Icon type="arrow-left" /> Back to home
+          </BackButton>
+          <Link to="/ask" className="button">
+            Ask a new question
+          </Link>
+        </div>
       </div>
     );
   }

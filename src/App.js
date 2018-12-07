@@ -57,14 +57,12 @@ class App extends Component {
               Logged in as {isAuthenticated.displayName} (Log out)
             </div>
           )}
-          <div className="wrapper">
-            <Route exact path="/" component={Home} />
-            <Route exact path="/ask" component={Ask} />
-            <Route exact path="/answer/:questionId" component={Answer} />
-            <Route exact path="/answers" component={Answers} />
-            <Route exact path="/questions" component={Questions} />
-            <Route exact path="/review/:answerId" component={Review} />
-          </div>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/ask" component={Ask} />
+          <Route exact path="/answer/:questionId" component={Answer} />
+          <Route exact path="/answers" component={Answers} />
+          <Route exact path="/questions" component={Questions} />
+          <Route exact path="/review/:answerId" component={Review} />
         </div>
       </Router>
     );
