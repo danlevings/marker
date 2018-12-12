@@ -11,6 +11,7 @@ import Home from "./containers/Home";
 import Login from "./containers/Login";
 import Questions from "./containers/Questions";
 import Review from "./containers/Review";
+import Register from "./containers/Register";
 
 class App extends Component {
   state = {
@@ -44,9 +45,12 @@ class App extends Component {
     }
     if (!isAuthenticated) {
       return (
-        <div className="App">
-          <Login />
-        </div>
+        <Router>
+          <div className="App">
+            <Route exact path="/" component={Login} />
+            <Route exact path="/register" component={Register} />
+          </div>
+        </Router>
       );
     }
     return (
@@ -54,7 +58,8 @@ class App extends Component {
         <div className="App">
           {isAuthenticated && (
             <div className="auth" onClick={this.onLogout}>
-              Logged in as {isAuthenticated.displayName} (Log out)
+              Logged in as{" "}
+              {isAuthenticated.displayName || isAuthenticated.email} (Log out)
             </div>
           )}
           <Route exact path="/" component={Home} />
