@@ -1,16 +1,9 @@
 import React, { Component } from "react";
-import { Icon, notification } from "antd";
+import { notification, Icon } from "antd";
 import styled from "styled-components";
 import firebase from "firebase";
-import { Link } from "react-router-dom";
-
-const BackButton = styled(Link)`
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  border: none;
-  font-size: 18px;
-`;
+import Spinner from "../components/Spinner";
+import BackButton from "../components/BackButton";
 
 const Subtitle = styled.div`
   padding-bottom: 8px;
@@ -84,6 +77,7 @@ class Review extends Component {
     super(props);
     this.state = {
       isLoading: true,
+      isLoadingMachine: true,
       answer: {},
       question: {},
       selectedReview: null,
@@ -122,11 +116,32 @@ class Review extends Component {
           .then(doc => {
             if (doc.exists) {
               this.setState({
-                machineAssessment: doc.data().modelResults
+                machineAssessment: doc.data().modelResults,
+                isLoadingMachine: false
               });
             }
           });
       });
+  };
+
+  onRefresh = () => {
+    const {
+      match: {
+        params: { answerId }
+      }
+    } = this.props;
+    const { answer } = this.state;
+    this.setState({
+      isLoadingMachine: true
+    });
+    var onAnswer = firebase.functions().httpsCallable("onAnswer");
+    onAnswer({ questionId: answer.questionId, answerId }).then(result => {
+      console.log("onRefresh", result);
+      this.setState({
+        machineAssessment: result.data,
+        isLoadingMachine: false
+      });
+    });
   };
 
   onAssess = selectedReview => {
@@ -164,16 +179,25 @@ class Review extends Component {
       });
   };
 
+  renderMachineAssessment = letter => {
+    const { isLoadingMachine, machineAssessment } = this.state;
+    if (isLoadingMachine) {
+      return <Icon type="loading" />;
+    }
+    return parseFloat(machineAssessment[letter]).toFixed(3);
+  };
+
   render() {
     const {
       isLoading,
       answer,
       machineAssessment,
       selectedReview,
-      comments
+      comments,
+      isLoadingMachine
     } = this.state;
     if (isLoading) {
-      return <Icon type="loading" />;
+      return <Spinner />;
     }
     return (
       <div style={{ width: "100%", marginTop: 60 }}>
@@ -215,7 +239,17 @@ class Review extends Component {
           </div>
           {machineAssessment && (
             <div className="our-assessment">
-              <Subtitle>Our assessment</Subtitle>
+              <Subtitle>
+                Our assessment{" "}
+                {!isLoadingMachine && (
+                  <Icon
+                    type="reload"
+                    onClick={this.onRefresh}
+                    style={{ cursor: "pointer" }}
+                  />
+                )}
+              </Subtitle>
+
               <div
                 className="machine-assessment"
                 style={{
@@ -223,7 +257,7 @@ class Review extends Component {
                     100}, 50%, 50%)`
                 }}
               >
-                {parseFloat(machineAssessment.A).toFixed(3)}
+                {this.renderMachineAssessment("A")}
               </div>
               <div
                 className="machine-assessment"
@@ -232,7 +266,7 @@ class Review extends Component {
                     100}, 50%, 50%)`
                 }}
               >
-                {parseFloat(machineAssessment.B).toFixed(3)}
+                {this.renderMachineAssessment("B")}
               </div>
               <div
                 className="machine-assessment"
@@ -241,7 +275,7 @@ class Review extends Component {
                     100}, 50%, 50%)`
                 }}
               >
-                {parseFloat(machineAssessment.C).toFixed(3)}
+                {this.renderMachineAssessment("C")}
               </div>
               <div
                 className="machine-assessment"
@@ -250,7 +284,7 @@ class Review extends Component {
                     100}, 50%, 50%)`
                 }}
               >
-                {parseFloat(machineAssessment.D).toFixed(3)}
+                {this.renderMachineAssessment("D")}
               </div>
               <div
                 className="machine-assessment"
@@ -259,7 +293,7 @@ class Review extends Component {
                     100}, 50%, 50%)`
                 }}
               >
-                {parseFloat(machineAssessment.E).toFixed(3)}
+                {this.renderMachineAssessment("E")}
               </div>
             </div>
           )}
@@ -274,9 +308,7 @@ class Review extends Component {
                 })
               }
             />
-            <BackButton to="/answers" className="button">
-              <Icon type="arrow-left" /> Back to answers
-            </BackButton>
+            <BackButton to="/answers">Back to answers</BackButton>
             <button className="button" onClick={this.onSubmit}>
               Submit
             </button>

@@ -1,16 +1,10 @@
 import React, { Component } from "react";
-import { Table, Icon } from "antd";
+import { Table } from "antd";
 import { Link } from "react-router-dom";
 import firebase from "firebase";
 import styled from "styled-components";
-
-const BackButton = styled(Link)`
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  border: none;
-  font-size: 18px;
-`;
+import BackButton from "../components/BackButton";
+import Spinner from "../components/Spinner";
 
 const StyledTable = styled(Table)`
   margin-bottom: 60px;
@@ -90,7 +84,7 @@ class Answers extends Component {
     const { questions, answers, columns, isLoading } = this.state;
 
     if (isLoading) {
-      return <Icon type="loading" />;
+      return <Spinner />;
     }
     return (
       <div className="wrapper">
@@ -106,7 +100,7 @@ class Answers extends Component {
             columns={columns}
             pagination={false}
             expandedRowRender={record => (
-              <Table
+              <StyledTable
                 dataSource={(answers[record.id] || []).map(answer => ({
                   ...answer,
                   author: answer.author.name,
@@ -116,15 +110,14 @@ class Answers extends Component {
                     <Link to={`/review/${answer.id}`}>Review</Link>
                   )
                 }))}
-                pagination={false}
                 columns={[
                   {
-                    title: "author",
+                    title: "Author",
                     dataIndex: "author",
                     key: "author"
                   },
                   {
-                    title: "actions",
+                    title: "",
                     dataIndex: "actions",
                     key: "actions"
                   }
@@ -136,9 +129,7 @@ class Answers extends Component {
           <div style={{ marginBottom: 60 }}>No data here</div>
         )}
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <BackButton to="/" className="button">
-            <Icon type="arrow-left" /> Back to home
-          </BackButton>
+          <BackButton to="/">Back to home</BackButton>
           <Link to="/ask" className="button">
             Ask a new question
           </Link>

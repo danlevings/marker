@@ -1,16 +1,8 @@
 import React, { Component } from "react";
-import { Icon, notification } from "antd";
+import { notification } from "antd";
 import firebase from "firebase";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-
-const BackButton = styled(Link)`
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  border: none;
-  font-size: 18px;
-`;
+import BackButton from "../components/BackButton";
 
 const TextBox = styled.input`
   width: 100%;
@@ -103,9 +95,7 @@ class Ask extends Component {
         </AskContainer>
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <BackButton to="/" className="button">
-            <Icon type="arrow-left" /> Back to answers
-          </BackButton>
+          <BackButton to="/">Back to answers</BackButton>
           <button className="button" onClick={this.onSubmit}>
             Submit
           </button>

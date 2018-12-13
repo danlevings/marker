@@ -1,16 +1,10 @@
 import React, { Component } from "react";
-import { Table, Button, Icon } from "antd";
+import { Table, Button } from "antd";
 import { Link } from "react-router-dom";
 import firebase from "firebase";
 import styled from "styled-components";
-
-const BackButton = styled(Link)`
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  border: none;
-  font-size: 18px;
-`;
+import BackButton from "../components/BackButton";
+import Spinner from "../components/Spinner";
 
 const StyledTable = styled(Table)`
   margin-bottom: 60px;
@@ -136,7 +130,7 @@ class Questions extends Component {
     const { questions, answers, columns } = this.state;
 
     if (!questions) {
-      return <Icon type="loading" />;
+      return <Spinner />;
     }
 
     const dataSource = questions.map(question => ({
@@ -162,9 +156,7 @@ class Questions extends Component {
           columns={columns}
           pagination={false}
         />
-        <BackButton to="/" className="button">
-          <Icon type="arrow-left" /> Back to home
-        </BackButton>
+        <BackButton to="/">Back to home</BackButton>
       </div>
     );
   }

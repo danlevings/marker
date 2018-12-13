@@ -1,16 +1,9 @@
 import React, { Component } from "react";
-import { Icon, notification } from "antd";
+import { notification } from "antd";
 import firebase from "firebase";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-
-const BackButton = styled(Link)`
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  border: none;
-  font-size: 18px;
-`;
+import BackButton from "../components/BackButton";
+import Spinner from "../components/Spinner";
 
 const AnswerBox = styled.textarea`
   width: 100%;
@@ -90,7 +83,7 @@ class Answer extends Component {
     const { isLoading, question, answerValue } = this.state;
 
     if (isLoading) {
-      return <Icon type="loading" />;
+      return <Spinner />;
     }
 
     return (
@@ -119,9 +112,7 @@ class Answer extends Component {
             Write your answer here...
           </AnswerBox>
           <div style={{ display: "flex", justifyContent: "right" }}>
-            <BackButton to="/questions" className="button">
-              <Icon type="arrow-left" /> Back to questions
-            </BackButton>
+            <BackButton to="/questions">Back to questions</BackButton>
             <button className="button" onClick={this.onSubmit}>
               Submit
             </button>
