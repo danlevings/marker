@@ -103,9 +103,11 @@ class Answers extends Component {
               <StyledTable
                 dataSource={(answers[record.id] || []).map(answer => ({
                   ...answer,
-                  author: answer.author.name,
+                  author: answer.author.name || answer.author.email,
                   actions: answer.isReviewed ? (
-                    <span>Reviewed! {answer.score}</span>
+                    <Link to={`/review/${answer.id}`}>
+                      {answer.score} (Rereview)
+                    </Link>
                   ) : (
                     <Link to={`/review/${answer.id}`}>Review</Link>
                   )

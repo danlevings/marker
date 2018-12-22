@@ -18,7 +18,7 @@ const AnswerBox = styled.textarea`
 `;
 
 const AnswerBoxContainer = styled.div`
-  width: 60%;
+  width: 100%;
   margin: 20px auto;
 `;
 
@@ -62,7 +62,7 @@ class Answer extends Component {
       .add({
         answer: answerValue,
         author: {
-          name: currentUser.displayName,
+          name: currentUser.displayName || currentUser.email,
           uid: currentUser.uid
         },
         comments: "",
@@ -87,13 +87,12 @@ class Answer extends Component {
     }
 
     return (
-      <div>
+      <div className="wrapper" style={{ width: "70%" }}>
         <h1
           className="stroked"
           style={{
             textAlign: "center",
             fontSize: 42,
-            width: "80%",
             margin: "0 auto"
           }}
         >

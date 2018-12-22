@@ -103,8 +103,11 @@ class Review extends Component {
       .doc(answerId)
       .get()
       .then(doc => {
+        const data = doc.data();
         this.setState({
-          answer: { ...doc.data(), id: doc.id },
+          answer: { ...data, id: doc.id },
+          comments: data.comments || "",
+          selectedReview: data.score || null,
           isLoading: false
         });
 
@@ -310,7 +313,7 @@ class Review extends Component {
             />
             <BackButton to="/answers">Back to answers</BackButton>
             <button className="button" onClick={this.onSubmit}>
-              Submit
+              {answer.score ? "Rereview" : "Submit Review"}
             </button>
           </div>
         </Container>

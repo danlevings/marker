@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "antd/dist/antd.css";
 import firebase from "firebase";
 
@@ -35,11 +35,14 @@ class App extends Component {
   }
 
   onLogout = () => {
-    firebase.auth().signOut();
+    firebase
+      .auth()
+      .signOut()
+      .then(() => (window.location.href = ""));
   };
   render() {
     const { isLoading, isAuthenticated } = this.state;
-    console.log(isAuthenticated);
+
     if (isLoading) {
       return "Loading...";
     }
@@ -47,8 +50,10 @@ class App extends Component {
       return (
         <Router>
           <div className="App">
-            <Route exact path="/" component={Login} />
-            <Route exact path="/register" component={Register} />
+            <Switch>
+              <Route exact path="/register" component={Register} />
+              <Route exact component={Login} />
+            </Switch>
           </div>
         </Router>
       );

@@ -76,7 +76,7 @@ class Ask extends Component {
   render() {
     const { titleValue, keywordValue } = this.state;
     return (
-      <div>
+      <div className="wrapper">
         <h1 className="stroked">Create a question</h1>
         <AskContainer>
           <div>What is the question?</div>
